@@ -1,0 +1,14 @@
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.deb
+*.exe
+*.AppImage
+*.log
+profiles.json
+profiles.json.tmp
+.venv/

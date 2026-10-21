@@ -1,106 +1,122 @@
-# Logibust Lighting Studio
+# Logibust
 
-Native GTK3 Linux Mint lighting app for the connected **Logitech G610 (046d:c338)** and **G502 Proteus Spectrum (046d:c332)**. This is an independent Linux application, not a patched or redistributed Logitech installer.
+A native Linux peripheral-lighting control panel, with an Options+-inspired device-first interface and original device illustrations. Independent software; not affiliated with Logitech. No Logitech installer, vendor artwork, or firmware is bundled.
 
-## Open
+## Open and background startup
 
-Find **Logibust Lighting Studio** in the applications menu, or run from this directory:
+Open **Logibust Lighting Studio** from the applications menu, or:
 
 ```sh
 /usr/bin/python3 app.py
 ```
 
-Launching, loading profiles, and login startup **never apply lighting automatically**. Device output needs an explicit **Start keyboard** or **Apply mouse lighting**. Do not run the application as root.
+Run beside the clock without opening a window:
 
-## Controls
+```sh
+/usr/bin/python3 app.py --background
+```
 
-- **G610:** steady light, breathing, horizontal/vertical wave, concentric ripple, scanner, starlight, falling rain, checkerboard, WASD focus, selected keys, orbit, heartbeat, diagonal sweep.
-- White intensity, speed and reverse direction; interactive physical-key preview. Click keys or use the named-key selector and **Toggle selected key**. Selection switches to the selected-keys preset.
-- **Pause animation** freezes preview and the animation clock. **Stop output / freeze** stops further animation writes, leaving the last hardware frame. An already-running write can finish. **Keyboard off** sends a blackout independently of preview.
-- Keyboard edits update hardware while output is running. Frames are capped at 10 Hz, unchanged frames skipped, pending frames replaced by the latest; one worker serializes device I/O.
-- **G502:** independent driver LED 0 / LED 1 or both; steady RGB, breathing, color cycle and off. RGB picker, intensity, and 1–10-second firmware period. The color picker is disabled for cycle/off; period disabled for steady/off.
-- Mouse settings change only on **Apply**, never on every preview frame. Static intensity scales the RGB channels because that firmware mode has no independent brightness field.
-- Named profiles store the visible controls, including the chosen mouse LED target; not a snapshot of every device/onboard profile. Save uses atomic JSON replacement. Loading stops keyboard output and changes preview only. Invalid profile files are preserved and errors shown.
-- Close hides to the tray **when a tray is available**; otherwise close quits. **Quit** stops host-generated animations, leaving the final keyboard frame. Mouse firmware effects continue independently.
-- Optional **Open at login (preview only)** creates a user-local autostart entry. It is off unless explicitly enabled. Reduced-motion desktop settings pause animation initially. Some presets flash; use steady light if sensitive to flashing.
+Install the user-local menu entry and enable background login startup:
 
-## Hardware boundaries
+```sh
+/usr/bin/python3 app.py --install-desktop --enable-autostart
+```
 
-**G610 has white LEDs, not RGB.** The preview is a physical-key reference, not automatic language/layout detection. ISO/ABNT extra key controls are shown separately; absent physical keys cannot light. Lock-status indicators remain outside the animation map.
+The tray menu offers **Open Logibust**, **Stop keyboard animation**, and **Quit Logibust**. Closing the window hides it when a tray is available. Without a tray, background startup shows the window after a short grace period instead of leaving an inaccessible process. The login checkbox can disable startup without deleting its configuration file.
 
-**G502 uses libratbag's exposed firmware modes.** This app does not host-stream arbitrary RGB animations, synchronize mouse/keyboard frames, or claim audio/typing-reactive effects. Repeated ratbag commits can write onboard profiles; they must not be used as an animation clock. Physical names for LED indices are unverified, so the UI deliberately uses LED 0/1 instead of guessing logo/DPI order.
+Startup and profile loading are **preview only**: no lighting changes happen until **Start keyboard** or **Apply lighting**. No keys are selected initially; saved selections load only through an explicit profile load. The application does not depend on Solaar.
 
-Ratbagd commits are asynchronous. A successful apply means the service accepted the request; it is **not optical feedback or a guaranteed hardware completion acknowledgement**. Avoid editing the same mouse simultaneously in Piper/other lighting utilities: ratbagd commits shared staged device state. Logibust itself sets only LED properties, never DPI, button actions, firmware or profile activation.
+## Device-first interface
 
-## Dependencies / machine changes
+- Connected peripherals appear first in the left sidebar. The connected G610 is preferred on this setup; otherwise the first ready connected device is selected.
+- One device panel is shown at a time, with a keyboard, mouse, headset, mousepad or generic peripheral illustration and relevant controls.
+- **Browse device library** exposes 108 model entries from 10 brands: Logitech, ASUS, SteelSeries, Roccat, Glorious, G.Skill, Etekcity, Nubwo, SinoWealth and openinput. Search filters the sidebar.
+- The library is an identification/reference catalog, **not a claim that all 108 devices have lighting or have been hardware-tested**. Offline entries are labeled catalog previews and cannot receive hardware commands. Connected devices without a lighting driver remain identifiable, with actions disabled.
+- Selecting a different device stops outgoing keyboard streaming. Pending writes retain their original target; stale callbacks cannot mark a newly selected device live. Duplicate physical instances are not collapsed into a single catalog entry.
 
-Uses system `/usr/bin/python3`, GTK3/PyGObject/Cairo, and the already-installed ratbagd service. No web server, root daemon, new Python packages or global input monitoring.
+The interface borrows the white/pale-gray, purple-accent, device-first approach described in [Logitech's official Options+ device setup guide](https://hub.sync.logitech.com/options/post/device-setup-in-options-ESnKTSDRb8xy7mL). The artwork is original Cairo drawing, not copied product photographs or logos. Illustrations and the ANSI/ISO keyboard reference are not exact product/language-layout detection.
 
-`g810-led` is used as a separate upstream executable. To prepare the keyboard driver without system package installation:
+## Lighting controls
+
+### Keyboards
+
+Fourteen presets: steady light, breathing, horizontal wave, vertical wave, concentric ripple, scanner, starlight, falling rain, checkerboard, WASD focus, selected keys, orbit, heartbeat and diagonal sweep.
+
+Brightness, speed, direction, animation pause, selectable keys and clear selection. Use the graphic or the keyboard-accessible named-key selector. A selected-keys preset with an empty selection lights nothing. Choosing WASD focus is an explicit preset choice, not an automatic key selection.
+
+**G610 LEDs are white only.** RGB color controls are disabled for it. Documented RGB g810-led models get an RGB color picker. Whole-board-only keyboards, such as G213/G413, do not expose per-key effects. The reference key map covers standard keys, media keys and ISO/ABNT extras, not every model's extra macro keys or lock-status indicators.
+
+**Start keyboard** sends frames to the selected device. Live effect edits update it. **Stop / freeze** stops future animation frames, leaving the last frame; an in-flight write can finish. **Keyboard off** sends a blackout independently of the preview. Frames are capped at 10 Hz, unchanged frames skipped, and stale pending frames coalesced by one I/O worker.
+
+Some presets flash. Use steady light if sensitive to flashes. Desktop reduced-motion preferences pause the preview initially.
+
+### G502 Proteus Spectrum
+
+The dedicated runtime backend targets only USB **046d:c332**. It discovers the HID++ lighting feature and its zone/effect indices from the device, validates the opened HID descriptor's USB identity, waits for matching command acknowledgements, then checks the current hardware effect state.
+
+The two detected zones are **DPI indicators** and **Logo**. Each can use steady RGB, breathing, color cycle or off; controls include brightness and a 1–10-second period. An all-zones target is also available. Brightness zero sends Off rather than relying on the firmware's ambiguous zero-percentage convention.
+
+The corrected path uses HID++ **0x8070 runtime RAM writes**, with the persistence byte kept zero. No onboard-profile commit, DPI/button change, profile activation or firmware update is used. Effects can reset on unplug/power loss; apply again when needed. The app does not host-stream arbitrary RGB animations or synchronize mouse and keyboard frames.
+
+### Other lighting peripherals
+
+The app also enumerates actual ratbagd devices, queries advertised LED zones/modes, and targets the selected backend object. This can expose lighting on additional supported mice/headsets/peripherals from the installed driver ecosystem. A model definition alone never enables controls.
+
+Generic ratbagd commits remain asynchronous: success means **request accepted, not confirmed physical output**. They may write onboard profiles. Do not edit the same device concurrently in Piper/other lighting utilities, because ratbagd stages shared device state. The G502 Spectrum bypasses that profile path entirely.
+
+## Profiles and local files
+
+Named profiles store the visible lighting controls, not a snapshot of every device's onboard configuration. Save uses atomic JSON replacement. Invalid/unsupported profile files are preserved and reported, never silently replaced by defaults.
+
+- Profiles: `$XDG_CONFIG_HOME/logibust/profiles.json`, default `~/.config/logibust/profiles.json`.
+- Menu entry: `$XDG_DATA_HOME/applications/logibust.desktop`, default `~/.local/share/applications/logibust.desktop`.
+- Login entry: `$XDG_CONFIG_HOME/autostart/logibust.desktop`, default `~/.config/autostart/logibust.desktop`.
+
+After moving the project, rerun `--install-desktop --enable-autostart` to update the paths. Disabling login startup sets `Hidden=true` instead of deleting the entry. Do not run the GUI as root.
+
+## Dependencies
+
+Linux with GTK3/PyGObject/Cairo and `/usr/bin/python3`. Use ratbagd for generic ratbag lighting devices. No web server, root Logibust daemon, global keyboard monitoring, or new Python packages are required.
+
+For a user-local g810-led installation on Ubuntu/Mint amd64:
 
 ```sh
 ./prepare-driver.sh
 ```
 
-This downloads Ubuntu/Mint amd64 `g810-led`, `libg810-led0`, and `libhidapi-hidraw0` packages through the configured apt repositories, extracting them under `~/.cache/logibust/g810-led/`. Nothing is installed in `/usr`, and package service/udev scripts do not run. The app prefers an installed `g610-led`, otherwise this local copy. Upstream licensing remains in the extracted package documentation.
+This downloads `g810-led`, `libg810-led0` and `libhidapi-hidraw0` through configured apt repositories, extracting them under `~/.cache/logibust/g810-led/`. It does not install system packages or run package udev/service hooks. The app prefers installed driver commands and otherwise uses this local copy. Upstream package licensing remains in its extracted documentation.
 
-The user explicitly approved `/etc/udev/rules.d/70-logibust-g610.rules`: `uaccess` for **only USB 046d:c338**, with udev reloaded and only that USB device triggered. No world-writable device permissions were added. The packaged driver uses hidraw; this machine's G610 hidraw nodes were already accessible. On another machine, inspect hidraw access if discovery fails; the supplied USB rule alone does not grant every possible backend's required access. Never work around this by running the entire GUI as root.
+USB/hidraw access is required. The supplied `70-logibust-g610.rules` is a narrow USB `uaccess` example for **only 046d:c338**; it is not automatically installed. On the tested machine this rule was installed with explicit approval, and keyboard/mouse hidraw access already worked. This USB-only rule does not grant every backend's hidraw requirements on another machine. Configure a scoped device rule rather than using world-writable permissions or a root GUI.
 
-User data:
-
-- Profiles: `${XDG_CONFIG_HOME:-~/.config}/logibust/profiles.json`.
-- Menu entry: `${XDG_DATA_HOME:-~/.local/share}/applications/logibust.desktop`.
-- Optional autostart: `${XDG_CONFIG_HOME:-~/.config}/autostart/logibust.desktop`. Disabling sets `Hidden=true`; does not delete the file.
-
-After moving this project directory, regenerate the menu entry:
-
-```sh
-/usr/bin/python3 app.py --install-desktop
-```
-
-## Checks and observed results
+## Verification
 
 ```sh
 /usr/bin/python3 selfcheck.py
 /usr/bin/python3 devices.py --diagnose
 ```
 
-Verified on this machine:
+Completed checks on Linux Mint with G610 046d:c338 and G502 Spectrum 046d:c332:
 
-- Native desktop window rendered, keyboard preview and both ready statuses inspected. Desktop input verification was stopped with Escape before any automated UI clicks; no further desktop control was attempted.
-- Separate Xvfb GTK runtime exercised actual widgets: discovery, selected-key preview, animation pause, profile save/load-to-preview, mouse control sensitivity and accessible field names. This did not change lighting.
-- Self-check passed for all 14 effects: white intensity boundaries, deterministic frames, animation changes, reverse direction, exact custom selection, profile round-trip/corruption preservation and valid driver frame construction.
-- Real G610 driver accepted five animated frames and a steady 128/255 frame in approximately 0.30 seconds. Last smoke-test state: steady 128/255.
-- Real G502 LED 0 request accepted, with expected staged RGB/mode readback; other LED unchanged. Prior mouse lighting restored in ratbagd. Button mappings, resolutions and active-profile metadata read back unchanged.
-- A further isolated GTK run activated Start, Stop, Keyboard off and Apply mouse: actual G610 write/blackout completion callbacks and ratbagd acceptance reached their expected UI states. Afterwards G610 was set back to steady 128/255. No further host-desktop input automation was used.
-- Explicit blackout scheduling survives an in-flight frame failure; this regression is retained in `selfcheck.py`.
-- User-local driver preparation, desktop-file validation and Python compilation succeeded.
+- Empty initial selection and G610-first default; three actual connected peripherals identified, including an unsupported-lighting USB keyboard.
+- All 14 frame effects, intensity boundaries, direction, custom keys, persisted-profile validation/corruption preservation, catalog/live-instance merging, and blackout/failure ordering.
+- Real keyboard writes through GTK Start, switching-device stop, Off and steady-light paths. Stale completions do not update another device's state.
+- The G502's live effect enumeration reports breathing **effect ID 10 at wire index 2**. Old ratbag profile cache values did not match the mouse's live state. The new runtime path correctly translates effect indices, acknowledges writes and checks the live effect readback.
+- The user visually confirmed the G502 turned steady red. Breathing was also exercised through the new app's Apply action with device acknowledgement/readback. No claim is made that every firmware mode or every library model was visually tested.
+- Profile save/load-to-preview, offline actions disabled, and selected-device navigation exercised in isolated GTK runs. Actual keyboard/mouse panel renders inspected. Desktop input automation was not performed because its approval prompts were unanswered.
+- Real desktop background launch remained windowless, and Gtk.StatusIcon reported embedding into the desktop tray. Autostart/menu entries validated. Tray menu click interaction was not manually exercised.
 
-The physical light output was **not measured or visually confirmed**. Tray integration, suspend/resume, unplug/replug, login launch and every mouse firmware mode were not separately exercised on the desktop.
+The Windows Options+ installer used during the initial investigation was left unchanged. Static package metadata identified a Windows x64 PE wrapper containing another Windows setup PE, not a native Linux application. REA engines were unavailable; no decompilation, vendor source recovery, installer patching, or firmware extraction occurred. This is an independent Linux implementation using public driver/protocol information.
 
-## Installer investigation / evidence boundary
+## Sources
 
-Original file left untouched: `/home/nicholas/Downloads/logioptionsplus_installer.exe`.
+- [g810-led supported keyboards, intensity/profile commands](https://github.com/MatMoul/g810-led)
+- [g810-led USB rules and command feature flags](https://github.com/MatMoul/g810-led/blob/master/src/helpers/help.h)
+- [libratbag device metadata](https://github.com/libratbag/libratbag/tree/master/data/devices)
+- [libratbag HID++ protocol structures](https://github.com/libratbag/libratbag/blob/master/src/hidpp20.h)
+- [libratbag HID++ operations](https://github.com/libratbag/libratbag/blob/master/src/hidpp20.c)
+- [OpenRGB captures for this exact G502 Spectrum](https://openrgb-wiki.readthedocs.io/en/latest/Logitech-G502/)
+- [Official Options+ device setup/navigation](https://hub.sync.logitech.com/options/post/device-setup-in-options-ESnKTSDRb8xy7mL)
 
-Observed with `file`, `sha256sum`, `7z l` and `objdump -p`:
+## Changes
 
-- 49,944,728 bytes; SHA-256 `ebdc8c4d9647a9d17652d2129563c4251d8c74adeee5d3dedca4551633437f7a`.
-- Native PE32+ x64 Windows GUI outer executable, Options+ metadata version 2.8.981479.
-- Resource `.rsrc/RCDATA/101` contains another Windows PE named `logioptionsplus_setup.exe` (49,057,944 bytes).
-- Windows API imports, including `COMCTL32.dll`; no CLR runtime header in the outer executable.
-
-**Inference:** changing installer bytes is not a practical route to a native Linux lighting stack; a Linux UI plus existing Linux device drivers avoids depending on Windows application/driver services. Logitech's official Options+ page offers Windows, macOS and Googlebook downloads, not a Linux desktop release.
-
-REA doctor reported stale OMP registration and missing native engines; no REA MCP tools were exposed. No configuration repair, analysis-engine installation, Windows execution, decompilation, firmware extraction, or vendor source recovery was performed. Therefore there are no REA-issued Evidence IDs to cite. The static package inventory does not establish the full installed Options+ architecture or runtime behavior. Independent implementation uses public driver interfaces, not recovered proprietary code.
-
-Primary references:
-
-- [g810-led support, G610 intensity and batched profiles](https://github.com/MatMoul/g810-led#readme)
-- [g810-led profile parser and command handling](https://github.com/MatMoul/g810-led/blob/master/src/main.cpp)
-- [g810-led key names](https://github.com/MatMoul/g810-led/blob/master/src/helpers/help.cpp)
-- [libratbag HID++ LED/profile commit implementation](https://github.com/libratbag/libratbag/blob/master/src/driver-hidpp20.c)
-- [Official Options+ platform downloads](https://www.logitech.com/en-us/software/logi-options-plus)
-
-## Initial delivery
-
-Independent native lighting studio, bounded device I/O, 14 white-light presets, per-key editor, G502 firmware controls, profiles, tray/login integration, focused self-check and user-local launcher. Windows installer and firmware unchanged.
+Device-first sidebar dashboard and original graphics; empty initial key selection; corrected, acknowledged G502 runtime lighting; broader source-backed catalog and capability-driven backends; safe target switching; background tray/login startup. Solaar is not required.

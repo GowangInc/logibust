@@ -1,0 +1,1116 @@
+{
+  "version": 1,
+  "source": "libratbag installed device definitions; model names and device identifiers only, not capability guarantees",
+  "devices": [
+    {
+      "id": "catalog:logitech-g603",
+      "name": "Logitech G603",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:406c"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g603.device"
+    },
+    {
+      "id": "catalog:asus-rog-gladius2-origin",
+      "name": "ASUS ROG Gladius II Origin",
+      "vendor": "ASUS",
+      "kind": "mouse",
+      "usb_ids": [
+        "0b05:1877"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/asus-rog-gladius2-origin.device"
+    },
+    {
+      "id": "catalog:glorious-model-d",
+      "name": "Glorious Model D",
+      "vendor": "Glorious",
+      "kind": "mouse",
+      "usb_ids": [
+        "258a:0033"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/glorious-model-d.device"
+    },
+    {
+      "id": "catalog:logitech-g5",
+      "name": "G5",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c041"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g5.device"
+    },
+    {
+      "id": "catalog:logitech-g703",
+      "name": "Logitech G703",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c087",
+        "046d:4070"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g703.device"
+    },
+    {
+      "id": "catalog:sinowealth-0027",
+      "name": "SinoWealth Generic Mouse (0027)",
+      "vendor": "SinoWealth",
+      "kind": "mouse",
+      "usb_ids": [
+        "258a:0027"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/sinowealth-0027.device"
+    },
+    {
+      "id": "catalog:logitech-g903-hero",
+      "name": "Logitech G903 Hero",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c091",
+        "046d:4087"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g903-hero.device"
+    },
+    {
+      "id": "catalog:asus-rog-strix-impact2-wireless",
+      "name": "ASUS ROG Strix Impact II Wireless",
+      "vendor": "ASUS",
+      "kind": "mouse",
+      "usb_ids": [
+        "0b05:1947",
+        "0b05:1949"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/asus-rog-strix-impact2-wireless.device"
+    },
+    {
+      "id": "catalog:logitech-g5-2007",
+      "name": "Logitech G5",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c049"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g5-2007.device"
+    },
+    {
+      "id": "catalog:logitech-MX-Anywhere2S",
+      "name": "Logitech MX Anywhere 2S",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:406a"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-MX-Anywhere2S.device"
+    },
+    {
+      "id": "catalog:roccat-kone-emp",
+      "name": "Roccat Kone EMP",
+      "vendor": "Roccat",
+      "kind": "mouse",
+      "usb_ids": [
+        "1e7d:2e24"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/roccat-kone-emp.device"
+    },
+    {
+      "id": "catalog:logitech-g635",
+      "name": "Logitech G635",
+      "vendor": "Logitech",
+      "kind": "headset",
+      "usb_ids": [
+        "046d:0a89"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g635.device"
+    },
+    {
+      "id": "catalog:gskill-MX-780",
+      "name": "G.Skill MX-780",
+      "vendor": "G.Skill",
+      "kind": "mouse",
+      "usb_ids": [
+        "28da:3101"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/gskill-MX-780.device"
+    },
+    {
+      "id": "catalog:logitech-g403-hero",
+      "name": "Logitech G403 Hero",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c08f"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g403-hero.device"
+    },
+    {
+      "id": "catalog:logitech-g302",
+      "name": "Logitech Gaming Mouse G302",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c07f"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g302.device"
+    },
+    {
+      "id": "catalog:logitech-M325",
+      "name": "Logitech M325",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:400a"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-M325.device"
+    },
+    {
+      "id": "catalog:roccat-kone-xtd",
+      "name": "Roccat Kone XTD",
+      "vendor": "Roccat",
+      "kind": "mouse",
+      "usb_ids": [
+        "1e7d:2e22"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/roccat-kone-xtd.device"
+    },
+    {
+      "id": "catalog:logitech-g700s",
+      "name": "Logitech G700s",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c07c"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g700s.device"
+    },
+    {
+      "id": "catalog:steelseries-rival-310",
+      "name": "SteelSeries Rival 310",
+      "vendor": "SteelSeries",
+      "kind": "mouse",
+      "usb_ids": [
+        "1038:1720"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/steelseries-rival-310.device"
+    },
+    {
+      "id": "catalog:logitech-M720",
+      "name": "Logitech M720",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:405e"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-M720.device"
+    },
+    {
+      "id": "catalog:logitech-g700",
+      "name": "Logitech G700",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c06b"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g700.device"
+    },
+    {
+      "id": "catalog:steelseries-rival-600",
+      "name": "SteelSeries Rival 600",
+      "vendor": "SteelSeries",
+      "kind": "mouse",
+      "usb_ids": [
+        "1038:1724"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/steelseries-rival-600.device"
+    },
+    {
+      "id": "catalog:glorious-model-o",
+      "name": "Glorious Model O/O-",
+      "vendor": "Glorious",
+      "kind": "mouse",
+      "usb_ids": [
+        "258a:0036"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/glorious-model-o.device"
+    },
+    {
+      "id": "catalog:logitech-g-pro",
+      "name": "Logitech Gaming Mouse G Pro",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c085",
+        "046d:c08c"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g-pro.device"
+    },
+    {
+      "id": "catalog:asus-rog-strix-carry",
+      "name": "ASUS ROG Strix Carry",
+      "vendor": "ASUS",
+      "kind": "mouse",
+      "usb_ids": [
+        "0b05:18b4"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/asus-rog-strix-carry.device"
+    },
+    {
+      "id": "catalog:asus-rog-gladius2",
+      "name": "ASUS ROG Gladius II",
+      "vendor": "ASUS",
+      "kind": "mouse",
+      "usb_ids": [
+        "0b05:1845"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/asus-rog-gladius2.device"
+    },
+    {
+      "id": "catalog:steelseries-sensei-raw",
+      "name": "SteelSeries Sensei Raw",
+      "vendor": "SteelSeries",
+      "kind": "mouse",
+      "usb_ids": [
+        "1038:1369"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/steelseries-sensei-raw.device"
+    },
+    {
+      "id": "catalog:logitech-MX-Vertical",
+      "name": "Logitech MX Vertical",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:407b",
+        "046d:c08a"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-MX-Vertical.device"
+    },
+    {
+      "id": "catalog:logitech-g403",
+      "name": "Logitech G403",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c083"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g403.device"
+    },
+    {
+      "id": "catalog:logitech-MX518",
+      "name": "MX518",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c08e"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-MX518.device"
+    },
+    {
+      "id": "catalog:logitech-g733",
+      "name": "Logitech G733 Gaming Headset",
+      "vendor": "Logitech",
+      "kind": "headset",
+      "usb_ids": [
+        "046d:0ab5"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g733.device"
+    },
+    {
+      "id": "catalog:logitech-g703-hero",
+      "name": "Logitech G703 Hero",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:4086",
+        "046d:c090"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g703-hero.device"
+    },
+    {
+      "id": "catalog:logitech-M570",
+      "name": "Logitech M570",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:1028"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-M570.device"
+    },
+    {
+      "id": "catalog:steelseries-kinzu-v2",
+      "name": "SteelSeries Kinzu V2",
+      "vendor": "SteelSeries",
+      "kind": "mouse",
+      "usb_ids": [
+        "1038:1378"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/steelseries-kinzu-v2.device"
+    },
+    {
+      "id": "catalog:logitech-MX-Anywhere2",
+      "name": "Logitech MX Anywhere 2",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:404a",
+        "046d:4072",
+        "046d:4063"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-MX-Anywhere2.device"
+    },
+    {
+      "id": "catalog:logitech-M500s",
+      "name": "Logitech M500s",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c093"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-M500s.device"
+    },
+    {
+      "id": "catalog:nubwo-x7-spectrum",
+      "name": "Nubwo x7 spectrum",
+      "vendor": "Nubwo",
+      "kind": "mouse",
+      "usb_ids": [
+        "258a:0012"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/nubwo-x7-spectrum.device"
+    },
+    {
+      "id": "catalog:logitech-g604",
+      "name": "Logitech G604",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:4085"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g604.device"
+    },
+    {
+      "id": "catalog:logitech-g300",
+      "name": "Logitech G300",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c246"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g300.device"
+    },
+    {
+      "id": "catalog:steelseries-kinzu-v3",
+      "name": "SteelSeries Kinzu V3",
+      "vendor": "SteelSeries",
+      "kind": "mouse",
+      "usb_ids": [
+        "1038:1388"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/steelseries-kinzu-v3.device"
+    },
+    {
+      "id": "catalog:logitech-MX-Master-2S",
+      "name": "Logitech MX Master 2S",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:4069"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-MX-Master-2S.device"
+    },
+    {
+      "id": "catalog:logitech-M585-M590",
+      "name": "Logitech M585/M590",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:406b"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-M585-M590.device"
+    },
+    {
+      "id": "catalog:logitech-g102-g203",
+      "name": "Logitech Gaming Mouse G102/G103/G203",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c084",
+        "046d:c092"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g102-g203.device"
+    },
+    {
+      "id": "catalog:logitech-g910",
+      "name": "Logitech G910",
+      "vendor": "Logitech",
+      "kind": "keyboard",
+      "usb_ids": [
+        "046d:c335"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g910.device"
+    },
+    {
+      "id": "catalog:logitech-g602",
+      "name": "Logitech G602",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:402c"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g602.device"
+    },
+    {
+      "id": "catalog:logitech-g903",
+      "name": "Logitech G903",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c086",
+        "046d:4067"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g903.device"
+    },
+    {
+      "id": "catalog:logitech-MX-Anywhere3B",
+      "name": "Logitech MX Anywhere 3B",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-MX-Anywhere3B.device"
+    },
+    {
+      "id": "catalog:logitech-g513",
+      "name": "Logitech G513",
+      "vendor": "Logitech",
+      "kind": "keyboard",
+      "usb_ids": [
+        "046d:c33c"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g513.device"
+    },
+    {
+      "id": "catalog:logitech-g900",
+      "name": "Logitech G900",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c081",
+        "046d:4053"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g900.device"
+    },
+    {
+      "id": "catalog:steelseries-rival-100",
+      "name": "SteelSeries Rival 100/105",
+      "vendor": "SteelSeries",
+      "kind": "mouse",
+      "usb_ids": [
+        "1038:1702",
+        "1038:170a",
+        "1038:170b",
+        "1038:170c",
+        "1038:1814"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/steelseries-rival-100.device"
+    },
+    {
+      "id": "catalog:logitech-g502-hero",
+      "name": "Logitech G502 Hero",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c08b"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g502-hero.device"
+    },
+    {
+      "id": "catalog:asus-rog-pugio",
+      "name": "ASUS ROG Pugio",
+      "vendor": "ASUS",
+      "kind": "mouse",
+      "usb_ids": [
+        "0b05:1846"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/asus-rog-pugio.device"
+    },
+    {
+      "id": "catalog:logitech-g303",
+      "name": "Logitech Gaming Mouse G303",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c080"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g303.device"
+    },
+    {
+      "id": "catalog:logitech-MX-Master",
+      "name": "Logitech MX Master",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:4041",
+        "046d:4060",
+        "046d:4071"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-MX-Master.device"
+    },
+    {
+      "id": "catalog:logitech-g-pro-wireless",
+      "name": "Logitech G Pro Wireless",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:4079",
+        "046d:c088"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g-pro-wireless.device"
+    },
+    {
+      "id": "catalog:logitech-g-powerplay",
+      "name": "Logitech G Powerplay",
+      "vendor": "Logitech",
+      "kind": "mousepad",
+      "usb_ids": [
+        "046d:405f"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g-powerplay.device"
+    },
+    {
+      "id": "catalog:sinowealth-1007",
+      "name": "SinoWealth Generic Mouse (1007)",
+      "vendor": "SinoWealth",
+      "kind": "mouse",
+      "usb_ids": [
+        "258a:1007"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/sinowealth-1007.device"
+    },
+    {
+      "id": "catalog:logitech-Marathon-M705",
+      "name": "Logitech Marathon M705",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:406d"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-Marathon-M705.device"
+    },
+    {
+      "id": "catalog:logitech-g403-wireless",
+      "name": "Logitech G403 Wireless",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:405d",
+        "046d:c082"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g403-wireless.device"
+    },
+    {
+      "id": "catalog:openinput",
+      "name": "openinput",
+      "vendor": "openinput",
+      "kind": "mouse",
+      "usb_ids": [
+        "1d50:616a"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/openinput.device"
+    },
+    {
+      "id": "catalog:logitech-g815",
+      "name": "Logitech G815",
+      "vendor": "Logitech",
+      "kind": "keyboard",
+      "usb_ids": [
+        "046d:c33f"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g815.device"
+    },
+    {
+      "id": "catalog:logitech-g9x-Original",
+      "name": "G9x [Original]",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c066"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g9x-Original.device"
+    },
+    {
+      "id": "catalog:logitech-g500s",
+      "name": "Logitech G500s",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c24e"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g500s.device"
+    },
+    {
+      "id": "catalog:logitech-g7",
+      "name": "Logitech G7",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c51a"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g7.device"
+    },
+    {
+      "id": "catalog:logitech-g915-tkl",
+      "name": "Logitech G915 TKL",
+      "vendor": "Logitech",
+      "kind": "keyboard",
+      "usb_ids": [
+        "046d:c343"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g915-tkl.device"
+    },
+    {
+      "id": "catalog:logitech-g502-x",
+      "name": "Logitech G502 X",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c099"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g502-x.device"
+    },
+    {
+      "id": "catalog:asus-rog-buzzard",
+      "name": "ASUS ROG GX860 Buzzard Mouse",
+      "vendor": "ASUS",
+      "kind": "mouse",
+      "usb_ids": [
+        "0b05:1816"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/asus-rog-buzzard.device"
+    },
+    {
+      "id": "catalog:logitech-M705",
+      "name": "Logitech M705",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:101b"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-M705.device"
+    },
+    {
+      "id": "catalog:logitech-MX-Anywhere-3",
+      "name": "Logitech MX Anywhere 3",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:4090"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-MX-Anywhere-3.device"
+    },
+    {
+      "id": "catalog:logitech-g-pro-x-wireless-superlight",
+      "name": "Logitech G Pro X Wireless Superlight",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:4093",
+        "046d:c094"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g-pro-x-wireless-superlight.device"
+    },
+    {
+      "id": "catalog:logitech-T650",
+      "name": "Logitech T650",
+      "vendor": "Logitech",
+      "kind": "other",
+      "usb_ids": [
+        "046d:4101"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-T650.device"
+    },
+    {
+      "id": "catalog:logitech-g305",
+      "name": "Logitech Gaming Mouse G305",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:4074"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g305.device"
+    },
+    {
+      "id": "catalog:etekcity-scroll-alpha",
+      "name": "Etekcity Scroll Alpha",
+      "vendor": "Etekcity",
+      "kind": "mouse",
+      "usb_ids": [
+        "1ea7:4011"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/etekcity-scroll-alpha.device"
+    },
+    {
+      "id": "catalog:logitech-g502-proteus-core",
+      "name": "Logitech G502 Proteus Core",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c07d"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g502-proteus-core.device"
+    },
+    {
+      "id": "catalog:logitech-g600",
+      "name": "Logitech G600",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c24a"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g600.device"
+    },
+    {
+      "id": "catalog:logitech-g935",
+      "name": "Logitech G935",
+      "vendor": "Logitech",
+      "kind": "headset",
+      "usb_ids": [
+        "046d:0a87"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g935.device"
+    },
+    {
+      "id": "catalog:logitech-MX-Master-3",
+      "name": "Logitech MX Master 3",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:4082"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-MX-Master-3.device"
+    },
+    {
+      "id": "catalog:logitech-Wireless-Touchpad",
+      "name": "Logitech Wireless Touchpad",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:4011"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-Wireless-Touchpad.device"
+    },
+    {
+      "id": "catalog:asus-rog-keris-wireless",
+      "name": "ASUS ROG Keris Wireless",
+      "vendor": "ASUS",
+      "kind": "mouse",
+      "usb_ids": [
+        "0b05:195e",
+        "0b05:1960"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/asus-rog-keris-wireless.device"
+    },
+    {
+      "id": "catalog:asus-rog-gladius2-origin-pink",
+      "name": "ASUS ROG Gladius II Origin PNK LTD",
+      "vendor": "ASUS",
+      "kind": "mouse",
+      "usb_ids": [
+        "0b05:18cd"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/asus-rog-gladius2-origin-pink.device"
+    },
+    {
+      "id": "catalog:logitech-MX-Ergo",
+      "name": "Logitech MX Ergo",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:406f"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-MX-Ergo.device"
+    },
+    {
+      "id": "catalog:logitech-g502-x-wireless",
+      "name": "Logitech G502 X Wireless",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c098"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g502-x-wireless.device"
+    },
+    {
+      "id": "catalog:roccat-kone-pure",
+      "name": "Roccat Kone Pure",
+      "vendor": "Roccat",
+      "kind": "mouse",
+      "usb_ids": [
+        "1e7d:2dc2",
+        "1e7d:2dbe",
+        "1e7d:2dcb"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/roccat-kone-pure.device"
+    },
+    {
+      "id": "catalog:sinowealth-0029",
+      "name": "SinoWealth Generic Mouse (0029)",
+      "vendor": "SinoWealth",
+      "kind": "mouse",
+      "usb_ids": [
+        "258a:0029"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/sinowealth-0029.device"
+    },
+    {
+      "id": "catalog:asus-rog-strix-impact",
+      "name": "ASUS ROG Strix Impact",
+      "vendor": "ASUS",
+      "kind": "mouse",
+      "usb_ids": [
+        "0b05:1847"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/asus-rog-strix-impact.device"
+    },
+    {
+      "id": "catalog:logitech-g9",
+      "name": "Logitech G9",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c048"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g9.device"
+    },
+    {
+      "id": "catalog:logitech-g402",
+      "name": "Logitech G402 Gaming Mouse",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c07e"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g402.device"
+    },
+    {
+      "id": "catalog:steelseries-kinzu-v2-pro",
+      "name": "SteelSeries Kinzu V2 Pro Edition",
+      "vendor": "SteelSeries",
+      "kind": "mouse",
+      "usb_ids": [
+        "1038:1366"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/steelseries-kinzu-v2-pro.device"
+    },
+    {
+      "id": "catalog:logitech-g9x-Call-of-Duty-MW3-Edition",
+      "name": "Logitech G9x [Call of Duty MW3 Edition]",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c249"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g9x-Call-of-Duty-MW3-Edition.device"
+    },
+    {
+      "id": "catalog:asus-rog-chakram",
+      "name": "ASUS ROG Chakram",
+      "vendor": "ASUS",
+      "kind": "mouse",
+      "usb_ids": [
+        "0b05:18e3",
+        "0b05:18e5"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/asus-rog-chakram.device"
+    },
+    {
+      "id": "catalog:logitech-g915",
+      "name": "Logitech G915",
+      "vendor": "Logitech",
+      "kind": "keyboard",
+      "usb_ids": [
+        "046d:c33e"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g915.device"
+    },
+    {
+      "id": "catalog:logitech-g502-proteus-spectrum",
+      "name": "Logitech G502 Proteus Spectrum",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c332"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g502-proteus-spectrum.device"
+    },
+    {
+      "id": "catalog:steelseries-sensei-310",
+      "name": "SteelSeries Sensei 310",
+      "vendor": "SteelSeries",
+      "kind": "mouse",
+      "usb_ids": [
+        "1038:1722"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/steelseries-sensei-310.device"
+    },
+    {
+      "id": "catalog:logitech-M545",
+      "name": "Logitech M545",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:4052"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-M545.device"
+    },
+    {
+      "id": "catalog:steelseries-rival",
+      "name": "SteelSeries Rival",
+      "vendor": "SteelSeries",
+      "kind": "mouse",
+      "usb_ids": [
+        "1038:1384",
+        "1038:1392",
+        "1038:1710",
+        "1038:1712",
+        "1038:171c",
+        "1038:1394",
+        "1038:171a",
+        "1038:1716",
+        "1038:1714",
+        "1038:1718"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/steelseries-rival.device"
+    },
+    {
+      "id": "catalog:logitech-g500",
+      "name": "Logitech G500",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c068"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g500.device"
+    },
+    {
+      "id": "catalog:logitech-g700-wireless",
+      "name": "Logitech G700",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:c531"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g700-wireless.device"
+    },
+    {
+      "id": "catalog:logitech-g502-hero-wireless",
+      "name": "Logitech G502 Hero Wireless",
+      "vendor": "Logitech",
+      "kind": "mouse",
+      "usb_ids": [
+        "046d:407f",
+        "046d:c08d"
+      ],
+      "backend": "ratbagd",
+      "source": "https://github.com/libratbag/libratbag/blob/master/data/devices/logitech-g502-hero-wireless.device"
+    }
+  ]
+}

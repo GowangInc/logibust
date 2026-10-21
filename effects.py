@@ -56,7 +56,7 @@ EFFECTS = {
     'heartbeat': 'Heartbeat', 'diagonal': 'Diagonal sweep',
 }
 DEFAULTS = dict(effect='wave', brightness=180, speed=1.0, reverse=False,
-                selected=['w', 'a', 's', 'd'], mouse_mode='breathing',
+                selected=[], keyboard_color='ffffff', mouse_mode='breathing',
                 mouse_color='00dcff', mouse_brightness=255, mouse_period=8000,
                 mouse_zone='all')
 
@@ -76,11 +76,13 @@ def validate(settings):
         raise ValueError('Reverse must be true or false.')
     if not isinstance(s['selected'], list) or any(not isinstance(k, str) or k not in KEY_NAMES for k in s['selected']):
         raise ValueError('Profile contains an unknown key.')
-    if s['mouse_mode'] not in ('static', 'off', 'breathing', 'cycle') or s['mouse_zone'] not in ('all', '0', '1'):
+    zone = s['mouse_zone']
+    if s['mouse_mode'] not in ('static', 'off', 'breathing', 'cycle') or not isinstance(zone, str) or not (zone == 'all' or (zone.isascii() and zone.isdecimal() and 0 <= int(zone) < 256)):
         raise ValueError('Unknown mouse mode or LED index.')
-    color = s['mouse_color']
-    if not isinstance(color, str) or len(color) != 6 or any(c not in '0123456789abcdefABCDEF' for c in color):
-        raise ValueError('Mouse color must have six hexadecimal digits.')
+    for field in ('mouse_color', 'keyboard_color'):
+        color = s[field]
+        if not isinstance(color, str) or len(color) != 6 or any(c not in '0123456789abcdefABCDEF' for c in color):
+            raise ValueError(f'{field} must have six hexadecimal digits.')
     return {k: s[k] for k in DEFAULTS}
 
 
