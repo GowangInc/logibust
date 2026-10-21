@@ -1,0 +1,2 @@
+# Active local desktop user only; Logitech G610 USB device only.
+ACTION!="remove", SUBSYSTEM=="usb", ENV{DEVTYPE}=="usb_device", ATTR{idVendor}=="046d", ATTR{idProduct}=="c338", TAG+="uaccess"
