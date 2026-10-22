@@ -36,6 +36,21 @@ Startup and profile loading are **preview only**: no lighting changes happen unt
 
 The interface borrows the white/pale-gray, purple-accent, device-first approach described in [Logitech's official Options+ device setup guide](https://hub.sync.logitech.com/options/post/device-setup-in-options-ESnKTSDRb8xy7mL). The artwork is original Cairo drawing, not copied product photographs or logos. Illustrations and the ANSI/ISO keyboard reference are not exact product/language-layout detection.
 
+## Virtual keyboard preview
+
+The animated virtual keyboard is still available:
+
+1. Open Logibust from the tray and select **Logitech G610** in the left sidebar.
+2. Scroll to the **top** of the right-hand panel. The keyboard drawing above the lighting controls is the live preview; scrolling down to Live Inputs moves it out of view.
+3. Choose **Horizontal wave**, **Aurora Drift**, or another scene. The preview animates without **Start keyboard** and without changing physical device lighting.
+4. If frozen, uncheck **Pause preview / animation**. Reduced-motion desktop preferences can pause it initially.
+
+Sound, monitor and typing presets need their opt-in input to animate; without input they correctly remain dark. Procedural scenes need no capture permissions.
+
+![Animated virtual keyboard in preview-only mode](docs/screenshots/keyboard-animation.gif)
+
+[Full-resolution keyboard screenshot](docs/screenshots/keyboard-preview.png)
+
 ## Lighting controls
 
 ### Keyboards
@@ -132,6 +147,18 @@ Completed checks on Linux Mint with G610 046d:c338 and G502 Spectrum 046d:c332:
 - Startup capture-off state, opt-in controls, stop-all teardown, source idempotence and actual GTK surface layout exercised. Test teardown left no capture workers, restored the previous G502 runtime lighting and set the G610 to steady 128/255. New scene output was not optically measured.
 
 The Windows Options+ installer used during the initial investigation was left unchanged. Static package metadata identified a Windows x64 PE wrapper containing another Windows setup PE, not a native Linux application. REA engines were unavailable; no decompilation, vendor source recovery, installer patching, or firmware extraction occurred. This is an independent Linux implementation using public driver/protocol information.
+
+## Screenshots
+
+Actual GTK application captures from an isolated X11 session, with hardware output and live-input capture disabled.
+
+### Mouse preview
+
+![G502 software lighting preview](docs/screenshots/mouse-preview.png)
+
+### Live-input and linked-device controls
+
+![Speaker, monitor, typing and linked-device controls](docs/screenshots/live-inputs.png)
 
 ## Sources
 
