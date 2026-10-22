@@ -13,8 +13,9 @@ gi.require_version('Gdk', '3.0')
 from gi.repository import Gdk, Gio, GLib, Gtk
 from catalog import load_catalog, merge_devices
 from devices import DeviceManager
-from effects import DEFAULTS, EFFECTS, KEYS, KEY_NAMES, Profiles, frame, validate
+from effects import DEFAULTS, EFFECTS, SOFTWARE_EFFECTS, KEYS, KEY_NAMES, Profiles, frame, mouse_frame, validate
 from graphics import DeviceIcon, KeyboardView, PeripheralView
+from reactive import ReactiveInputs, audio_sources
 
 
 class DeviceIO:
@@ -36,6 +37,7 @@ class DeviceIO:
     def cancel_keyboard(self):
         with self.condition:
             self.pending.pop('keyboard', None)
+            self.pending.pop('scene', None)
 
     def work(self):
         while True:
@@ -48,6 +50,8 @@ class DeviceIO:
                 value, error = operation(self.manager), None
             except Exception as e:
                 value, error = None, str(e)
+                if kind == 'scene':
+                    self.manager.release_lighting()
                 if kind == 'keyboard':
                     self.cancel_keyboard()
             GLib.idle_add(done, value, error)
@@ -124,6 +128,13 @@ class Studio(Gtk.ApplicationWindow):
         self.output_id = None
         self.generation = 0
         self.mouse_busy = False
+        self.mouse_output_id = None
+        self.mouse_linked = False
+        self.capture = ReactiveInputs()
+        self.capture_warning = ''
+        self.capture_ready = False
+        self.inputs = {}
+        self.mouse_colors = {}
         self.seconds = 0
         self.last_tick = time.monotonic()
         self.last_write = 0
@@ -223,6 +234,7 @@ class Studio(Gtk.ApplicationWindow):
         self.panel_stack.add_named(self.info_panel,'info')
         self.panel_stack.get_style_context().add_class('card')
         content.pack_start(self.panel_stack,False,False,0)
+        content.pack_start(self.build_reactive_controls(),False,False,0)
         profilebar = Gtk.Box(spacing=8)
         profilebar.get_style_context().add_class('card')
         profilebar.pack_start(label('Profiles','section'),False,False,0)
@@ -241,7 +253,7 @@ class Studio(Gtk.ApplicationWindow):
         self.autostart.set_active(self.autostart_enabled())
         self.autostart.connect('toggled',self.set_autostart)
         content.pack_start(self.autostart,False,False,0)
-        self.tray_note = label('Close hides to tray. Mouse firmware effects continue without this window.','muted')
+        self.tray_note = label('Close hides to tray. Software scenes and enabled capture continue until stopped.','muted')
         self.tray_note.set_line_wrap(True)
         content.pack_start(self.tray_note,False,False,0)
 
@@ -308,17 +320,129 @@ class Studio(Gtk.ApplicationWindow):
         field(grid,'Zone',self.mouse_zone,1)
         field(grid,'RGB color',self.color,2)
         field(grid,'Brightness / 255',self.mouse_intensity,0,2)
-        field(grid,'Period / seconds',self.period,1,2)
+        field(grid,'Period / software tempo',self.period,1,2)
         self.mouse_button = button('Apply lighting',self.apply_mouse,True)
         self.mouse_button.set_sensitive(False)
         grid.attach(self.mouse_button,2,3,1,1)
         box.pack_start(grid,False,False,0)
+        box.pack_start(button('Stop / freeze',self.stop_keyboard),False,False,0)
         self.lighting_note = label('Lighting runs on the device; preview does not apply changes.','muted')
         self.lighting_note.set_line_wrap(True)
         box.pack_start(self.lighting_note,False,False,0)
         self.mouse_mode.connect('changed',self.mouse_sensitivity)
+        self.mouse_mode.connect('changed',self.software_mode_changed)
         self.mouse_zone.connect('changed',lambda *_:self.populate_modes())
         return box
+
+    def build_reactive_controls(self):
+        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,spacing=9)
+        box.get_style_context().add_class('card')
+        box.pack_start(label('LIVE INPUTS · OPT IN','section'),False,False,0)
+        grid = Gtk.Grid(column_spacing=14,row_spacing=7)
+        self.audio_enabled = Gtk.CheckButton(label='Listen to speaker output')
+        self.screen_enabled = Gtk.CheckButton(label='Read monitor colors')
+        self.typing_enabled = Gtk.CheckButton(label='Listen to physical key presses')
+        self.audio_source = combo([],'Speaker output monitor')
+        self.screen_source = combo([],'Monitor to sample')
+        self.typing_source = combo([],'Physical keyboard to listen to')
+        self.monitor_regions = {}
+        display = Gdk.Display.get_default()
+        for i in range(display.get_n_monitors()):
+            monitor = display.get_monitor(i)
+            r = monitor.get_geometry()
+            key = str(i)
+            self.screen_source.append(key,f'{monitor.get_model() or "Monitor"} · {r.width}×{r.height}')
+            self.monitor_regions[key] = dict(display=display.get_name(),x=r.x,y=r.y,width=r.width,height=r.height)
+        self.screen_source.set_active(0)
+        try:
+            for source_id,name in audio_sources():
+                self.audio_source.append(source_id,name)
+            self.audio_source.set_active(0)
+        except (OSError,RuntimeError,ValueError) as error:
+            self.audio_source.set_tooltip_text(str(error))
+        for row,(toggle,source) in enumerate(((self.audio_enabled,self.audio_source),
+                (self.screen_enabled,self.screen_source),(self.typing_enabled,self.typing_source))):
+            grid.attach(toggle,0,row,1,1)
+            grid.attach(source,1,row,2,1)
+        self.reactive_gain = scale(.2,5,.1,1,'Reactive sensitivity')
+        self.reactive_gain.set_digits(1)
+        self.reactive_decay = scale(.3,5,.1,1.8,'Ripple lifetime in seconds')
+        self.reactive_decay.set_digits(1)
+        field(grid,'Sensitivity',self.reactive_gain,0,3)
+        field(grid,'Ripple lifetime / seconds',self.reactive_decay,1,3)
+        self.link_devices = Gtk.CheckButton(label='Link mouse to this keyboard scene')
+        self.link_target = combo([],'Mouse linked to keyboard scene')
+        grid.attach(self.link_devices,0,5,1,1)
+        grid.attach(self.link_target,1,5,2,1)
+        box.pack_start(grid,False,False,0)
+        self.capture_status = label('Capture is off. Choose an effect, enable its input, then Start / Apply.','muted')
+        self.capture_status.set_line_wrap(True)
+        box.pack_start(self.capture_status,False,False,0)
+        privacy = label('No recordings or typed text are saved. Typing listens across apps, including password fields; disable it before sensitive typing.','muted')
+        privacy.set_line_wrap(True)
+        box.pack_start(privacy,False,False,0)
+        box.pack_start(button('Stop lighting + disable capture',self.stop_all_capture),False,False,0)
+        for widget in (self.audio_enabled,self.screen_enabled,self.typing_enabled):
+            widget.connect('toggled',self.configure_capture)
+        for widget in (self.audio_source,self.screen_source,self.typing_source):
+            widget.connect('changed',self.configure_capture)
+        self.link_devices.connect('toggled',lambda *_:self.stop_keyboard() if self.output else None)
+        self.link_target.connect('changed',lambda *_:self.stop_keyboard() if self.output else None)
+        self.effect.connect('changed',self.software_mode_changed)
+        self.capture_ready = True
+        return box
+
+    def populate_capture_sources(self):
+        self.capture_ready = False
+        old_keyboard = self.typing_source.get_active_id()
+        old_mouse = self.link_target.get_active_id()
+        self.typing_source.remove_all()
+        self.link_target.remove_all()
+        keyboards = [d for d in self.devices if d['connected'] and d['kind']=='keyboard']
+        mice = [d for d in self.devices if d['connected'] and d['ready'] and d['backend']=='HID++ 8070']
+        for d in keyboards:
+            self.typing_source.append(d['id'],d['name'])
+        for d in mice:
+            self.link_target.append(d['id'],d['name'])
+        if old_keyboard:
+            self.typing_source.set_active_id(old_keyboard)
+        elif self.selected_device and self.selected_device['kind']=='keyboard':
+            self.typing_source.set_active_id(self.selected_device['id'])
+        if old_mouse:
+            self.link_target.set_active_id(old_mouse)
+        elif len(mice)==1:
+            self.link_target.set_active_id(mice[0]['id'])
+        self.capture_ready = True
+        self.configure_capture()
+
+    def configure_capture(self, *_):
+        if not self.capture_ready or self.closed:
+            return
+        source = self.audio_source.get_active_id()
+        screen = self.monitor_regions.get(self.screen_source.get_active_id()) if self.screen_enabled.get_active() else None
+        keyboard = next((d for d in self.devices if d['id']==self.typing_source.get_active_id()),None) if self.typing_enabled.get_active() else None
+        if keyboard:
+            keyboard = dict(keyboard,display=Gdk.Display.get_default().get_name())
+        try:
+            self.capture.configure(audio=self.audio_enabled.get_active(),audio_source=source,screen=screen,keyboard=keyboard)
+            self.inputs = self.capture.snapshot()
+            self.capture_warning = ''
+            self.capture_status.set_text(self.capture.status())
+        except (OSError,RuntimeError,ValueError) as error:
+            self.capture_warning = 'Capture unavailable: '+str(error)
+            self.capture_status.set_text(self.capture_warning)
+
+    def software_mode_changed(self, *_):
+        if self.mouse_output_id and not self.mouse_linked and self.mouse_mode.get_active_id() not in SOFTWARE_EFFECTS:
+            self.stop_keyboard()
+        if self.mouse_linked and self.effect.get_active_id() not in SOFTWARE_EFFECTS:
+            self.stop_keyboard()
+
+    def stop_all_capture(self, *_):
+        self.stop_keyboard()
+        for widget in (self.audio_enabled,self.screen_enabled,self.typing_enabled):
+            widget.set_active(False)
+        self.configure_capture()
 
     def row_visible(self, row):
         d = row.device
@@ -412,6 +536,8 @@ class Studio(Gtk.ApplicationWindow):
         self.mouse_button.set_sensitive(device['ready'] and lighting and not self.mouse_busy)
         self.output_status.set_text('PREVIEW ONLY · select Start to send keyboard frames')
         self.lighting_note.set_text('Live HID++ acknowledgement and state verification; RAM only, no flash/profile commit.' if device['backend']=='HID++ 8070' else 'ratbagd firmware effects. Hardware commit is asynchronous; avoid other editors at the same time.')
+        self.link_devices.set_sensitive(keyboard and bool(device.get('per_key')))
+        self.link_target.set_sensitive(keyboard and bool(device.get('per_key')))
         self.keyboard.queue_draw()
         self.peripheral.queue_draw()
 
@@ -426,6 +552,9 @@ class Studio(Gtk.ApplicationWindow):
         for mode in ('static','breathing','cycle','off'):
             if mode in available:
                 self.mouse_mode.append(mode,{'static':'Steady color','breathing':'Breathing','cycle':'Color cycle','off':'Off'}[mode])
+        if d.get('backend')=='HID++ 8070' and 'static' in available:
+            for mode,name in SOFTWARE_EFFECTS.items():
+                self.mouse_mode.append(mode,name+' · software')
         if not self.mouse_mode.set_active_id(old):
             self.mouse_mode.set_active(0)
         self.mouse_sensitivity()
@@ -433,8 +562,8 @@ class Studio(Gtk.ApplicationWindow):
     def mouse_sensitivity(self, *_):
         mode = self.mouse_mode.get_active_id()
         rgb = bool(self.selected_device and self.selected_device['rgb'])
-        self.color.set_sensitive(rgb and mode in ('static','breathing'))
-        self.period.set_sensitive(mode in ('breathing','cycle'))
+        self.color.set_sensitive(rgb and mode in ('static','breathing','audio_level','audio_spectrum','audio_pulse','typing_ripple'))
+        self.period.set_sensitive(mode in ('breathing','cycle') or mode in SOFTWARE_EFFECTS)
         self.mouse_intensity.set_sensitive(mode not in ('off',None))
 
     def settings(self):
@@ -445,7 +574,9 @@ class Studio(Gtk.ApplicationWindow):
             speed=self.speed.get_value(),reverse=self.reverse.get_active(),selected=sorted(self.selected),
             keyboard_color=hex_color(self.keyboard_color),mouse_mode=self.mouse_mode.get_active_id() or DEFAULTS['mouse_mode'],
             mouse_zone=self.mouse_zone.get_active_id() or 'all',mouse_color=hex_color(self.color),
-            mouse_brightness=round(self.mouse_intensity.get_value()),mouse_period=round(self.period.get_value()*1000)))
+            mouse_brightness=round(self.mouse_intensity.get_value()),mouse_period=round(self.period.get_value()*1000),
+            reactive_gain=self.reactive_gain.get_value(),reactive_decay=self.reactive_decay.get_value(),
+            link_devices=self.link_devices.get_active()))
 
     def restore_settings(self, s):
         if not self.effect.set_active_id(s['effect']):
@@ -464,6 +595,9 @@ class Studio(Gtk.ApplicationWindow):
             self.mouse_mode.set_active(0)
         self.mouse_intensity.set_value(s['mouse_brightness'])
         self.period.set_value(s['mouse_period']/1000)
+        self.reactive_gain.set_value(s['reactive_gain'])
+        self.reactive_decay.set_value(s['reactive_decay'])
+        self.link_devices.set_active(s['link_devices'])
 
     def notify(self, text):
         if not self.closed:
@@ -475,18 +609,38 @@ class Studio(Gtk.ApplicationWindow):
         now = time.monotonic()
         if not self.pause.get_active():
             self.seconds += min(.2,now-self.last_tick)
+            self.inputs = self.capture.snapshot()
         self.last_tick = now
         settings = self.settings()
-        self.levels = frame(settings,self.seconds)
+        self.levels = frame(settings,self.seconds,self.inputs)
+        preview_mode = settings['effect'] if self.mouse_linked else settings['mouse_mode']
+        mouse_settings = {**settings,'speed':8000/settings['mouse_period']} if not self.mouse_linked and preview_mode in SOFTWARE_EFFECTS else settings
+        self.mouse_colors = mouse_frame(mouse_settings,self.seconds,self.inputs,mode=preview_mode)
         self.keyboard.queue_draw()
         self.peripheral.queue_draw()
-        if self.output and now-self.last_write >= .1 and (self.levels,settings['keyboard_color']) != self.last_frame:
-            self.last_write = now
-            levels = self.levels.copy()
-            device_id,generation,color = self.output_id,self.generation,settings['keyboard_color']
-            self.last_frame = (levels,color)
-            self.io.submit('keyboard',lambda m:m.apply_keyboard(device_id,levels,color),
-                lambda value,error:self.keyboard_result(device_id,generation,value,error))
+        active_effect = settings['effect'] if (self.selected_device or {}).get('kind')=='keyboard' else settings['mouse_mode']
+        prompt = ''
+        if active_effect.startswith('audio_') and not self.audio_enabled.get_active():
+            prompt = 'Enable speaker output for this effect. '
+        elif active_effect.startswith('screen_') and not self.screen_enabled.get_active():
+            prompt = 'Enable monitor colors for this effect. '
+        elif active_effect=='typing_ripple' and not self.typing_enabled.get_active():
+            prompt = 'Enable physical key presses for this effect. '
+        self.capture_status.set_text(prompt+(self.capture_warning or self.capture.status()))
+        if (self.output or self.mouse_output_id) and now-self.last_write >= .1:
+            colors = self.mouse_colors if self.mouse_output_id else None
+            if colors is not None and not self.mouse_linked and settings['mouse_zone']!='all':
+                colors = {k:v for k,v in colors.items() if k==settings['mouse_zone']}
+            levels = self.levels.copy() if self.output else None
+            packet = (levels,settings['keyboard_color'],colors)
+            if packet != self.last_frame:
+                self.last_write = now
+                self.last_frame = packet
+                keyboard_id,mouse_id = self.output_id,self.mouse_output_id
+                device_id,generation = self.selected_device['id'],self.generation
+                color = settings['keyboard_color']
+                self.io.submit('scene',lambda m:m.apply_scene(keyboard_id,levels,color,mouse_id,colors),
+                    lambda value,error:self.keyboard_result(device_id,generation,value,error))
         return True
 
     def keyboard_result(self, device_id, generation, value, error):
@@ -494,9 +648,10 @@ class Studio(Gtk.ApplicationWindow):
             return False
         if error:
             self.stop_keyboard()
-            self.notify('Keyboard output stopped: '+error)
-        elif self.output:
-            self.output_status.set_text('LIVE · sending frames to '+self.selected_device['name'])
+            self.notify('Lighting output stopped: '+error)
+        elif self.output or self.mouse_output_id:
+            names = [d['name'] for d in self.devices if d['id'] in (self.output_id,self.mouse_output_id)]
+            self.output_status.set_text('LIVE · '+' + '.join(names))
         return False
 
     def start_keyboard(self, *_):
@@ -504,17 +659,30 @@ class Studio(Gtk.ApplicationWindow):
         if not d or not d['ready'] or d['backend']!='g810-led':
             self.notify('Selected device has no ready keyboard lighting backend.')
             return
-        self.generation += 1
+        mouse = None
+        if self.link_devices.get_active():
+            mouse = next((m for m in self.devices if m['id']==self.link_target.get_active_id()
+                and m['ready'] and m['backend']=='HID++ 8070'),None)
+            if self.settings()['effect'] not in SOFTWARE_EFFECTS or mouse is None:
+                self.notify('Choose a software scene and a connected G502 to link, or turn linking off.')
+                return
+        self.stop_keyboard()
         self.output,self.output_id = True,d['id']
+        self.mouse_output_id = mouse['id'] if mouse else None
+        self.mouse_linked = mouse is not None
         self.last_frame = None
         self.output_status.set_text('STARTING · '+d['name'])
-        self.notify('Keyboard output enabled for '+d['name']+'. Switching devices stops this output.')
+        self.notify('Lighting enabled for '+d['name']+(' + '+mouse['name'] if mouse else '')+'. Switching devices stops streaming.')
 
     def stop_keyboard(self, *_):
         self.output = False
         self.output_id = None
+        self.mouse_output_id = None
+        self.mouse_linked = False
+        self.last_frame = None
         self.generation += 1
         self.io.cancel_keyboard()
+        self.io.submit('release',lambda m:m.release_lighting(),lambda *_:False)
         if hasattr(self,'output_status'):
             self.output_status.set_text('STOPPED · last frame frozen')
 
@@ -537,6 +705,16 @@ class Studio(Gtk.ApplicationWindow):
         if not d or not d['ready'] or not d['leds'] or self.mouse_busy:
             return
         s,device_id,name = self.settings(),d['id'],d['name']
+        if s['mouse_mode'] in SOFTWARE_EFFECTS:
+            if d['backend']!='HID++ 8070':
+                self.notify('Software RGB streaming is available only for the verified G502 backend.')
+                return
+            self.stop_keyboard()
+            self.mouse_output_id = device_id
+            self.last_frame = None
+            self.notify('Software scene enabled for '+name+'. Stop / freeze ends streaming.')
+            return
+        self.stop_keyboard()
         self.mouse_busy = True
         self.mouse_button.set_sensitive(False)
         self.notify('Applying lighting to '+name+'…')
@@ -553,6 +731,7 @@ class Studio(Gtk.ApplicationWindow):
         return False
 
     def probe(self):
+        self.stop_keyboard()
         self.io.submit('probe',lambda m:m.discover(),self.probe_result)
 
     def probe_result(self, result, error):
@@ -563,6 +742,7 @@ class Studio(Gtk.ApplicationWindow):
             return False
         self.devices = merge_devices(result,self.catalog)
         self.populate_sidebar()
+        self.populate_capture_sources()
         return False
 
     def selection_status(self):
@@ -626,7 +806,7 @@ class Studio(Gtk.ApplicationWindow):
 
     def tray_menu(self, icon, number, timestamp):
         menu = Gtk.Menu()
-        for title,callback in [('Open Logibust',lambda *_:self.show_studio()),('Stop keyboard animation',self.stop_keyboard),('Quit Logibust',lambda *_:self.destroy())]:
+        for title,callback in [('Open Logibust',lambda *_:self.show_studio()),('Stop lighting + capture',self.stop_all_capture),('Quit Logibust',lambda *_:self.destroy())]:
             item = Gtk.MenuItem(label=title)
             item.connect('activate',callback)
             menu.append(item)
@@ -678,7 +858,10 @@ class Studio(Gtk.ApplicationWindow):
         if self.tray_timer:
             GLib.source_remove(self.tray_timer)
         self.tray.set_visible(False)
-        self.io.close()
+        try:
+            self.capture.close()
+        finally:
+            self.io.close()
 
 
 def desktop_entry(background=False, hidden=False):

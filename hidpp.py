@@ -77,6 +77,7 @@ class G502Lighting:
         self.fd = None
         self.feature = None
         self.zones = []
+        self.last_colors = {}
 
     def __enter__(self):
         if self.path not in g502_endpoints():
@@ -165,6 +166,32 @@ class G502Lighting:
         if not targets or any(mode not in z['indexes'] for z in targets):
             raise ValueError('Selected LED or lighting mode is unavailable on this device.')
         updates = [(int(z['id']), effect_payload(int(z['id']), z['indexes'][mode], mode, color, brightness, period_ms)) for z in targets]
+        self._write_updates(updates)
+        self.last_colors.clear()
+        return 'G502 acknowledged and verified current LED settings. Runtime RAM only; no onboard-profile commit.'
+
+    def apply_frame(self, colors):
+        if not isinstance(colors,dict) or not colors or any(
+                not isinstance(zone,str) or zone not in {z['id'] for z in self.zones}
+                or not isinstance(rgb,(tuple,list)) or len(rgb)!=3
+                or any(type(c) is not int or not 0<=c<=255 for c in rgb)
+                for zone,rgb in colors.items()):
+            raise ValueError('A mouse frame needs supported zone IDs and RGB bytes.')
+        updates = []
+        for zone,rgb in colors.items():
+            if self.last_colors.get(zone)==tuple(rgb):
+                continue
+            mode = 'static' if any(rgb) else 'off'
+            info = next(z for z in self.zones if z['id']==zone)
+            if mode not in info['indexes']:
+                raise ValueError('The selected zone cannot accept software lighting frames.')
+            color = bytes(rgb).hex()
+            number = int(zone)
+            updates.append((number,effect_payload(number,info['indexes'][mode],mode,color,255,1000)))
+        self._write_updates(updates)
+        self.last_colors.update({zone:tuple(rgb) for zone,rgb in colors.items()})
+
+    def _write_updates(self, updates):
         previous = [(number, self.state(number)) for number, _ in updates]
         written = []
         try:
@@ -172,6 +199,10 @@ class G502Lighting:
                 written.append(number)
                 self.request(self.feature, 3, payload)
                 actual = self.state(number)
+                # Runtime scene frames use only off/static; firmware effects retain
+                # their own parameter layouts and readback fields.
+                mode = next(mode for z in self.zones if int(z['id'])==number
+                    for mode,index in z['indexes'].items() if index==payload[1])
                 relevant = {'off':(1,), 'static':(1,2,3,4), 'breathing':(1,2,3,4,5,6,8), 'cycle':(1,7,8,9)}[mode]
                 if any(actual[i] != payload[i] for i in relevant):
                     raise RuntimeError(f'G502 LED {number} acknowledged but current effect readback did not match.')
@@ -183,7 +214,7 @@ class G502Lighting:
                         self.request(self.feature, 3, old[:12] + b'\0'*4)
                     except Exception as e:
                         restore_errors.append(str(e))
+            self.last_colors.clear()
             if restore_errors:
                 raise RuntimeError(f'{error} Previous lighting could not be fully restored: {"; ".join(restore_errors)}') from error
             raise
-        return 'G502 acknowledged and verified current LED settings. Runtime RAM only; no onboard-profile commit.'

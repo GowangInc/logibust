@@ -4,7 +4,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gdk', '3.0')
 from gi.repository import Gdk, Gtk
-from effects import KEYS
+from effects import KEYS, SOFTWARE_EFFECTS
 
 
 def rounded(cr, x, y, w, h, radius=12):
@@ -24,7 +24,7 @@ def text(cr, value, x, y, size=12, color=(.30,.32,.38)):
     cr.show_text(value)
 
 
-def silhouette(cr, kind, color=(.48,.32,.91)):
+def silhouette(cr, kind, color=(.48,.32,.91), zone_colors=None):
     """A normalized 320 x 320 design field."""
     cr.set_line_width(2)
     if kind == 'mouse':
@@ -46,10 +46,10 @@ def silhouette(cr, kind, color=(.48,.32,.91)):
         cr.set_source_rgb(.20,.21,.25); cr.stroke()
         rounded(cr,135,119,20,14,3); cr.set_source_rgb(.34,.35,.39); cr.fill()
         for x,y in ((91,160),(85,173),(79,186)):
-            rounded(cr,x,y,18,5,2); cr.set_source_rgb(*color); cr.fill()
+            rounded(cr,x,y,18,5,2); cr.set_source_rgb(*(zone_colors.get('0',color) if zone_colors else color)); cr.fill()
         # Generic light-window shape, deliberately not the Logitech trademark.
         cr.move_to(161,218); cr.line_to(185,232); cr.line_to(163,255); cr.line_to(143,236); cr.close_path()
-        cr.set_source_rgb(*color); cr.fill()
+        cr.set_source_rgb(*(zone_colors.get('1',color) if zone_colors else color)); cr.fill()
         cr.move_to(103,146); cr.line_to(128,166); cr.line_to(115,183); cr.line_to(93,177)
         cr.set_source_rgb(.32,.33,.38); cr.stroke()
     elif kind == 'keyboard':
@@ -126,11 +126,16 @@ class PeripheralView(Gtk.DrawingArea):
             r,g,b = colorsys.hsv_to_rgb((self.studio.seconds/max(1,self.studio.period.get_value()))%1,.85,1)
             rgb.red,rgb.green,rgb.blue = r,g,b
         color = tuple(.18+(c*.82)*intensity for c in (rgb.red,rgb.green,rgb.blue))
+        zones = None
+        if d.get('backend')=='HID++ 8070':
+            chosen = self.studio.mouse_zone.get_active_id() or 'all'
+            zones = {zone:tuple(.06+.94*c/255 for c in channels) if chosen in ('all',zone) else (.22,.23,.26)
+                for zone,channels in self.studio.mouse_colors.items()}
         size = min(h-18,320)
         cr.save(); cr.translate((w-size)/2,4); cr.scale(size/320,size/320)
-        silhouette(cr,d.get('kind','other'),color)
+        silhouette(cr,d.get('kind','other'),color,zones)
         cr.restore()
-        text(cr,'Lighting preview',26,35,12,(.43,.35,.65))
+        text(cr,'Software scene · DPI / logo zones' if mode in SOFTWARE_EFFECTS else 'Lighting preview',26,35,12,(.43,.35,.65))
         text(cr,'Original illustration · not a product photograph',26,h-13,10,(.45,.46,.52))
         return False
 

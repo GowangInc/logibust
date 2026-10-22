@@ -89,6 +89,9 @@ class DeviceManager:
     def __init__(self):
         self.bus = None
         self.devices = {}
+        self.mouse = None
+        self.mouse_id = None
+        self.last_keyboard = None
 
     def call(self, path, interface, method, value=None):
         if self.bus is None:
@@ -113,6 +116,7 @@ class DeviceManager:
         return [(p,self.props(p,'Led')) for p in active[0][1]['Leds']]
 
     def discover(self):
+        self.release_lighting()
         records = usb_inputs()
         models = load_catalog()
         for d in records:
@@ -213,6 +217,7 @@ class DeviceManager:
             run_keyboard(d, ['-a', value])
         else:
             run_keyboard(d, ['-pp'], profile)
+        self.last_keyboard = (device_id,dict(levels),color)
         return 'Keyboard frame acknowledged by g810-led.'
 
     def apply_mouse(self, device_id, mode, color, brightness, period_ms, zone='all'):
@@ -220,6 +225,7 @@ class DeviceManager:
         if mode not in MODES or type(brightness) is not int or not 0 <= brightness <= 255 or type(period_ms) is not int or not 1000 <= period_ms <= 10000:
             raise ValueError('Invalid lighting mode, brightness or period.')
         d = self.selected(device_id)
+        self.release_lighting()
         if d['backend'] == 'HID++ 8070':
             with G502Lighting(d['_endpoint']) as mouse:
                 return mouse.apply(mode, color, brightness, period_ms, zone)
@@ -247,7 +253,29 @@ class DeviceManager:
             self.call(d['_ratbag'],SERVICE+'.Device','Commit')
         return 'Lighting request accepted by ratbagd. Hardware commit is asynchronous, not confirmed.'
 
+    def apply_scene(self, keyboard_id, levels, color, mouse_id, colors):
+        if keyboard_id and (keyboard_id,levels,color) != self.last_keyboard:
+            self.apply_keyboard(keyboard_id,levels,color)
+        if mouse_id:
+            d = self.selected(mouse_id)
+            if d['backend'] != 'HID++ 8070':
+                raise ValueError('Software frames require the verified G502 runtime backend.')
+            if self.mouse_id != mouse_id:
+                self.release_lighting()
+                self.mouse = G502Lighting(d['_endpoint']).__enter__()
+                self.mouse_id = mouse_id
+            self.mouse.apply_frame(colors)
+        return 'Runtime scene frame acknowledged.'
+
+    def release_lighting(self):
+        if self.mouse is not None:
+            self.mouse.__exit__(None,None,None)
+        self.mouse = None
+        self.mouse_id = None
+        self.last_keyboard = None
+
     def close(self):
+        self.release_lighting()
         self.bus = None
         self.devices = {}
 
